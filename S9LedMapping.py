@@ -45,8 +45,9 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.send_led_rams()
 
     def send_led_rams(self):
-        uart = serial.Serial(port=self.port_name, baudrate=115200,timeout=0.2)
+
         try:
+            uart = serial.Serial(port=self.port_name, baudrate=115200,timeout=0.2)
             checksum = 0xC5^34
             for i in range(34):
                 checksum ^= self.led_rams[i]
@@ -57,7 +58,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             info =  "Send Hex: " + ' '.join('{:02x}'.format(x) for x in send_list)
             print(str(info))
             back = uart.read(4)
-            if back:
+            if len(back)>0:
                 if back[0] == 0xc5:
                     self.plainTextEdit.appendPlainText("发送成功, 有回应。")
             else:
@@ -66,7 +67,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             uart.close()
         except Exception as e:
             print("send Fail:", str(e))
-            QMessageBox.information(self,"提示","发送失败, 请检查串口连线！")
+            QMessageBox.information(self,"提示","发送失败, 请检查串口！")
 
     def update_ser_name(self):
         self.port_name = self.comboBox_ser.currentText()
@@ -101,6 +102,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         for i in range(34):
             self.led_rams[i] = 0x00
         self.append_ledrams()
+        self.send_led_rams()
 
     def on_click_btn_poweron(self):
         self.toggle_btn_color(4,self.btn_powon)
@@ -170,6 +172,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
            # ram33由button按钮决定
            self.append_ledrams()
+           self.send_led_rams()
 
         except Exception as e:
            print("pressed: "+str(e))
@@ -179,6 +182,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         info = time_stamp+":"+' '.join('{:02x}'.format(x) for x in self.led_rams)
         print(info)
         self.plainTextEdit.appendPlainText(info)
+
 
 
     def setTableBackColor(self, i,j,bool):

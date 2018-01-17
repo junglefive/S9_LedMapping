@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['S9LedMapping.py'],
-             pathex=['C:\\Python\\Python35-32\\Lib\\site-packages\\PyQt5\\Qt\\bin', 'F:\\Workspace\\GitHub\\S9_LED_Mapping'],
+             pathex=['C:\\Python\\Python35-32\\Lib\\site-packages\\PyQt5\\Qt\\bin', 'C:\\Python\\Python35-32\\Lib\\site-packages\\PyQt5\\Qt\\plugins', 'F:\\Workspace\\GitHub\\S9_LedMapping'],
              binaries=[],
              datas=[],
              hiddenimports=[],
@@ -24,6 +24,6 @@ exe = EXE(pyz,
           name='S9LedMapping',
           debug=False,
           strip=False,
-          upx=True,
+          upx=False,
           runtime_tmpdir=None,
           console=False , icon='110.ico')
