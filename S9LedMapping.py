@@ -145,7 +145,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def toggle_btn_color(self,index,button):
        print("btn",index)
        if self.led_rams[33] & (0x01 << index):
-           self.led_rams[33] = self.led_rams[33]&(0xFE << index)
+           self.led_rams[33] = self.led_rams[33]&(0xFF^(0x01 << index))
            self.set_btn_color(button,False)
        else:
            self.led_rams[33] = self.led_rams[33] | (0x01 << index)
@@ -189,7 +189,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
            if i < 8:
                #
                if  self.led_rams[28 - j] & (0x01 << (7 - i)):
-                   self.led_rams[28 - j] = self.led_rams[28 - j] & (0xFE << (7 - i))
+                   self.led_rams[28 - j] = self.led_rams[28 - j] & (0xFF^(0x01<< (7 - i)) )
                    self.setTableBackColor(i,j,False)
                else:
                    self.led_rams[28 - j] = self.led_rams[28 - j] | (0x01 << (7 - i))
@@ -198,7 +198,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
            else:
                 if self.led_rams[29 + int((28-j)/8)]& (0x01 << (28-j)%8):
-                    self.led_rams[29 + int((28 - j) / 8)] = self.led_rams[29 + int((28-j)/8)]&(0xFE << (28-j)%8)
+                    self.led_rams[29 + int((28 - j) / 8)] = self.led_rams[29 + int((28-j)/8)]&(0xFF^(0x01<< (28-j)%8))
                     self.setTableBackColor(i,j,False)
                 else:
                     self.led_rams[29 + int((28 - j) / 8)] = self.led_rams[29 + int((28-j)/8)] | (0x01 << (28-j)%8)
@@ -241,7 +241,6 @@ class Custum_complains(QThread):
       def run(self):
           pass
           try:
-              # 串口工作主流程
               """主循环"""
               while True:
                 pass
