@@ -18,7 +18,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         # logo
         self.setWindowIcon(QIcon(":picture/img/110.png"))
         # 默认时间戳
-        self.time_stamp = datetime.datetime.now().strftime('%Y-%m-%d')
+        self.time_stamp = datetime.datetime.now().strftime('%H:%M:%S')
+        print(self.time_stamp)
         # 连接到把数据库
         # function initial
         self.init_watch_table_display()
@@ -34,6 +35,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.btn_kg.clicked.connect(self.on_click_btn_kg)
         self.btn_lb.clicked.connect(self.on_click_btn_lb)
         self.btn_send.clicked.connect(self.on_click_btn_send)
+        self.btn_set_all.clicked.connect(self.on_click_btn_set_all)
         self.watch_table_view.clicked.connect(self.on_click_watch_table_view)
         self.watch_table_view.pressed.connect(self.watch_table_pressed)
         self.led_rams = []
@@ -42,6 +44,25 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         print("led_rams: "+str(len(self.led_rams)))
         self.append_ledrams()
     def on_click_btn_send(self):
+        self.send_led_rams()
+
+    def on_click_btn_set_all(self):
+
+        for i in range(32):
+            self.led_rams[i] = 0xff
+        self.led_rams[32] = 0x1f
+        self.led_rams[33] = 0x1f
+
+        for i in range(9):
+            for j in range(29):
+                self.setTableBackColor(i, j, True)
+            self.set_btn_color(self.btn_powon,True)
+            self.set_btn_color(self.btn_wifi,True)
+            self.set_btn_color(self.btn_ble,True)
+            self.set_btn_color(self.btn_kg,True)
+            self.set_btn_color( self.btn_lb,True)
+
+        self.append_ledrams()
         self.send_led_rams()
 
     def send_led_rams(self):
@@ -101,8 +122,14 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.init_watch_table_display()
         for i in range(34):
             self.led_rams[i] = 0x00
+        self.set_btn_color(self.btn_powon, False)
+        self.set_btn_color(self.btn_wifi, False)
+        self.set_btn_color(self.btn_ble, False)
+        self.set_btn_color(self.btn_kg, False)
+        self.set_btn_color(self.btn_lb, False)
         self.append_ledrams()
         self.send_led_rams()
+
 
     def on_click_btn_poweron(self):
         self.toggle_btn_color(4,self.btn_powon)
@@ -119,11 +146,18 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
        print("btn",index)
        if self.led_rams[33] & (0x01 << index):
            self.led_rams[33] = self.led_rams[33]&(0xFE << index)
-           self.set_gray_text(button)
+           self.set_btn_color(button,False)
        else:
            self.led_rams[33] = self.led_rams[33] | (0x01 << index)
-           self.set_red_text(button)
+           self.set_btn_color(button,True)
        self.append_ledrams()
+       self.send_led_rams()
+
+    def set_btn_color(self, btn,bool=False):
+        if bool:
+            self.set_red_text(btn)
+        else:
+            self.set_gray_text(btn)
 
     def set_red_text(self, comp):
         palette = QPalette()
@@ -178,7 +212,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
            print("pressed: "+str(e))
 
     def append_ledrams(self):
-        time_stamp = datetime.datetime.now().strftime('%Y-%m-%d')
+        time_stamp = datetime.datetime.now().strftime('%H:%M:%S')
         info = time_stamp+":"+' '.join('{:02x}'.format(x) for x in self.led_rams)
         print(info)
         self.plainTextEdit.appendPlainText(info)
