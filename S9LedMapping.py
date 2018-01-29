@@ -188,11 +188,11 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
            # ram0~ram28
            if i < 8:
                #
-               if  self.led_rams[28 - j] & (0x01 << (7 - i)):
-                   self.led_rams[28 - j] = self.led_rams[28 - j] & (0xFF^(0x01<< (7 - i)) )
+               if  self.led_rams[28 - j] & (0x01 << (i)):
+                   self.led_rams[28 - j] = self.led_rams[28 - j] & (0xFF^(0x01<< (i)) )
                    self.setTableBackColor(i,j,False)
                else:
-                   self.led_rams[28 - j] = self.led_rams[28 - j] | (0x01 << (7 - i))
+                   self.led_rams[28 - j] = self.led_rams[28 - j] | (0x01 << (i))
                    self.setTableBackColor(i,j,True)
            # ram29~32
 
